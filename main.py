@@ -1,6 +1,7 @@
 import click 
 import json
 from pathlib import Path
+from colored import Fore, Back, Style
 
 FILE_PATH = f"{Path.home()}"+'/task.json'
 
@@ -117,7 +118,7 @@ def listTask():
     if taskList.tasks == []:
         print("empty list")
     for task in taskList.tasks:
-        print(f"{task.id} | {task.name} | {task.description} | {task.status}")
+        print(f" {Fore.red} {task.id} {Style.reset} | {task.name} | {task.description} | {task.status}")
 
 @click.command()
 @click.option("--id", help="task's id")
