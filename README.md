@@ -14,9 +14,20 @@ python main.py addtask tache5 desc
 
 3. Delete Task
 ```bash
-python main.py deletetask 1
+python main.py deletetask id
 ```
-
+4. Set status to ongoing
+```bash
+python main.py starttask id
+```
+5. Set status to blocked
+```bash
+python main.py blocktask id
+```
+6. Set status to finished
+```bash
+python main.py finishtask id
+```
 #### For help : 
 ```bash
 python main.py COMMAND --help

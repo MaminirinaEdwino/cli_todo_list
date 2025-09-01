@@ -133,11 +133,46 @@ def starttask(id):
             
     save_file(FILE_PATH, {"task": taskList.to_dict()})
     print(f"{tmp.id} | {tmp.name} | {tmp.description} | {tmp.status}")
-    
+
+@click.command()
+@click.option("--id", help="task's id")
+@click.argument("id")
+def finishTask(id):
+    taskList = TaskList()
+    taskList.load_from_file(FILE_PATH)
+    tmp = ""
+    for task in taskList.tasks:
+        if task.id == int(id):
+            task.set_status_to_done()
+            tmp = task
+            
+    save_file(FILE_PATH, {"task": taskList.to_dict()})
+    print(f"{tmp.id} | {tmp.name} | {tmp.description} | {tmp.status}")
+
+
+@click.command()
+@click.option("--id", help="task's id")
+@click.argument("id")
+def blockTask(id):
+    taskList = TaskList()
+    taskList.load_from_file(FILE_PATH)
+    tmp = ""
+    for task in taskList.tasks:
+        if task.id == int(id):
+            task.set_status_to_done()
+            tmp = task
+            
+    save_file(FILE_PATH, {"task": taskList.to_dict()})
+    print(f"{tmp.id} | {tmp.name} | {tmp.description} | {tmp.status}")
+
 cli.add_command(InitTask)
 cli.add_command(addTask)
 cli.add_command(deleteTask)
 cli.add_command(listTask)
 cli.add_command(starttask)
+cli.add_command(finishTask)
+cli.add_command(blockTask)
+
+
 if __name__ == '__main__':
     cli()
