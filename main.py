@@ -2,7 +2,7 @@ import click
 import json
 from pathlib import Path
 from colored import Fore, Back, Style
-
+from tabulate import tabulate
 FILE_PATH = f"{Path.home()}"+'/task.json'
 
 class Task:
@@ -51,6 +51,9 @@ def save_file(filename, taskList):
     with open(filename, 'w+') as file:
         json.dump(taskList, file, indent=4)
         
+        
+TableHeader = ['id', 'name', 'description', 'status']
+
 @click.group()
 def cli():
     pass
@@ -90,7 +93,10 @@ def addTask(name, description):
         response = "Task Added"
     
     save_file(FILE_PATH, {"task": taskList.to_dict()})
+    
     print(response)
+    print(tabulate([[task.id, task.name, task.description, task.status]], headers=TableHeader, tablefmt="fancy_grid"))
+    
 
 
 @click.command()
@@ -117,8 +123,28 @@ def listTask():
     # print(FILE_PATH)
     if taskList.tasks == []:
         print("empty list")
+    # for task in taskList.tasks:
+    #     print(f" {Fore.red} {task.id} {Style.reset} | {task.name} | {task.description} | {task.status}")
+    
+    data = []
     for task in taskList.tasks:
-        print(f" {Fore.red} {task.id} {Style.reset} | {task.name} | {task.description} | {task.status}")
+        couleurStatus = ""
+        if task.status == "en attente":
+            couleurStatus = Fore.yellow
+        if task.status == "en cours":
+            couleurStatus = Fore.blue
+        if task.status =="bloquée":
+            couleurStatus = Fore.red
+        if task.status == "terminée":
+            couleurStatus = Fore.green
+        data.append([task.id, task.name, task.description, f"{couleurStatus}{task.status}{Style.reset}"])
+        
+    table = tabulate(
+        data,
+        headers=['id', 'task', 'description', 'status'],
+        tablefmt="fancy_grid"
+    )
+    print(table)
 
 @click.command()
 @click.option("--id", help="task's id")
@@ -133,7 +159,8 @@ def starttask(id):
             tmp = task
             
     save_file(FILE_PATH, {"task": taskList.to_dict()})
-    print(f"{tmp.id} | {tmp.name} | {tmp.description} | {tmp.status}")
+    # print(f"{tmp.id} | {tmp.name} | {tmp.description} | {tmp.status}")
+    print(tabulate([[tmp.id, tmp.name, tmp.description, tmp.status]], headers=TableHeader, tablefmt="fancy_grid"))
 
 @click.command()
 @click.option("--id", help="task's id")
@@ -148,7 +175,8 @@ def finishTask(id):
             tmp = task
             
     save_file(FILE_PATH, {"task": taskList.to_dict()})
-    print(f"{tmp.id} | {tmp.name} | {tmp.description} | {tmp.status}")
+    # print(f"{tmp.id} | {tmp.name} | {tmp.description} | {tmp.status}")
+    print(tabulate([[tmp.id, tmp.name, tmp.description, tmp.status]], headers=TableHeader, tablefmt="fancy_grid"))
 
 
 @click.command()
@@ -160,11 +188,12 @@ def blockTask(id):
     tmp = ""
     for task in taskList.tasks:
         if task.id == int(id):
-            task.set_status_to_done()
+            task.set_status_to_blocked()
             tmp = task
             
     save_file(FILE_PATH, {"task": taskList.to_dict()})
-    print(f"{tmp.id} | {tmp.name} | {tmp.description} | {tmp.status}")
+    # print(f"{tmp.id} | {tmp.name} | {tmp.description} | {tmp.status}")
+    print(tabulate([[tmp.id, tmp.name, tmp.description, tmp.status]], headers=TableHeader, tablefmt="fancy_grid"))
 
 cli.add_command(InitTask)
 cli.add_command(addTask)
