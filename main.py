@@ -116,6 +116,18 @@ def deleteTask(id):
     save_file(FILE_PATH, {"task": taskList.to_dict()})
     print(status)
     
+def taskTable(data):
+    if data == []:
+        print("No task")
+    else:
+        table = tabulate(
+        data,
+        headers=['id', 'task', 'description', 'status'],
+        tablefmt="fancy_grid"
+        )
+        print(table)
+    
+    
 @click.command()
 def listTask():
     taskList = TaskList()
@@ -138,13 +150,69 @@ def listTask():
         if task.status == "terminée":
             couleurStatus = Fore.green
         data.append([task.id, task.name, task.description, f"{couleurStatus}{task.status}{Style.reset}"])
+    
+    taskTable(data)
+    
+
+@click.command()
+def listongoing():
+    taskList = TaskList()
+    taskList.load_from_file(FILE_PATH)
+    
+    if taskList.tasks == []:
+        print('empty task')
+    
+    data = []
+    for task in taskList.tasks:
+        if task.status == "en cours":
+            data.append([task.id, task.name, task.description, f"{Fore.blue}{task.status}{Style.reset}"])
+    
+    taskTable(data)
+    
+    
+@click.command()
+def listfinish():
+    taskList = TaskList()
+    taskList.load_from_file(FILE_PATH)
+    
+    if taskList.tasks == []:
+        print('empty task')
+    
+    data = []
+    for task in taskList.tasks:
+        if task.status == "terminée":
+            data.append([task.id, task.name, task.description, f"{Fore.blue}{task.status}{Style.reset}"])
+    taskTable(data)
+
+@click.command()
+def listblock():
+    taskList = TaskList()
+    taskList.load_from_file(FILE_PATH)
+    
+    if taskList.tasks == []:
+        print('empty task')
+    
+    data = []
+    for task in taskList.tasks:
+        if task.status == "bloquée":
+            data.append([task.id, task.name, task.description, f"{Fore.blue}{task.status}{Style.reset}"])
+    taskTable(data)
         
-    table = tabulate(
-        data,
-        headers=['id', 'task', 'description', 'status'],
-        tablefmt="fancy_grid"
-    )
-    print(table)
+    
+@click.command()
+def listwaiting():
+    taskList = TaskList()
+    taskList.load_from_file(FILE_PATH)
+    
+    if taskList.tasks == []:
+        print('empty task')
+    
+    data = []
+    for task in taskList.tasks:
+        if task.status == "en attente":
+            data.append([task.id, task.name, task.description, f"{Fore.blue}{task.status}{Style.reset}"])
+    taskTable(data)
+
 
 @click.command()
 @click.option("--id", help="task's id")
@@ -202,7 +270,10 @@ cli.add_command(listTask)
 cli.add_command(starttask)
 cli.add_command(finishTask)
 cli.add_command(blockTask)
-
+cli.add_command(listongoing)
+cli.add_command(listblock)
+cli.add_command(listwaiting)
+cli.add_command(listfinish)
 
 if __name__ == '__main__':
     cli()

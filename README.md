@@ -5,7 +5,7 @@
 ### Usage
 1. Initialize the task list with the inittask command
 ```bash 
-python main.py listtask
+python main.py inittask
 ```
 2. Add task 
 ```bash
